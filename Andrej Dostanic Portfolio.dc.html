@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:#f9f8f6;color:#171717;font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  a:hover{color:#525252;}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes floatIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .wr-section{padding:clamp(70px,8vw,100px) clamp(20px,4.4vw,64px);gap:56px}
+  .wr-stats{border-top:1px solid #404040;border-bottom:1px solid #404040}
+  .wr-stat{flex:1 1 140px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 14px;border-right:1px solid #404040;text-align:center}
+  .wr-stat:last-child{border-right:none}
+  .wr-stat-num{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(24px,3.4vw,36px);color:#f9f9f9;line-height:1;letter-spacing:-0.01em}
+  .wr-stat-label{color:#a2a2a2;font-size:12.5px;font-weight:500}
+  .wr-grid{gap:16px}
+  .wr-card{position:relative;flex:1 1 260px;background:#1c1c1c;border:1px solid #363636;border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;transition:transform .35s cubic-bezier(.22,1,.36,1),border-color .35s ease,box-shadow .35s ease}
+  .wr-card:hover{transform:translateY(-6px);border-color:#f9f9f9;box-shadow:0 16px 34px rgba(0,0,0,.4)}
+  .wr-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .wr-icon{width:38px;height:38px;border-radius:11px;background:#333333;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),background .35s ease;animation:wrFloat 3.6s ease-in-out infinite}
+  .wr-card:hover .wr-icon{animation-play-state:paused;transform:scale(1.15) rotate(-8deg);background:#3d3d3d}
+  .wr-title{font-family:'Manrope',sans-serif;font-weight:600;font-size:17px;color:#f9f9f9;margin:0}
+  .wr-desc{color:#a2a2a2;font-size:14px;line-height:1.6;margin:0}
+  @keyframes wrFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @media (max-width:760px){
+    .wr-section{padding:clamp(50px,6vw,76px) clamp(20px,4.4vw,64px);gap:36px}
+    .wr-stat{gap:4px;padding:14px 10px}
+    .wr-grid{gap:12px}
+    .wr-card{flex:1 1 240px;border-radius:12px;padding:16px 18px;gap:8px}
+    .wr-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+    .wr-icon{width:32px;height:32px;border-radius:9px;font-size:15px}
+    .wr-title{font-size:15px}
+    .wr-desc{font-size:13px;line-height:1.5}
+  }
+  @media (max-width:640px){
+    .footer-row{grid-template-columns:1fr 1fr !important;grid-template-areas:'a c' 'b d' !important;gap:8px !important}
+    .footer-pill{width:100% !important;justify-content:center !important;padding:8px 14px !important;font-size:13px !important;gap:6px !important;white-space:nowrap}
+    .footer-pill img{width:17px !important;height:17px !important}
+    .footer-pill svg{width:14px !important;height:14px !important}
+    .footer-name{gap:14px !important}
+  }
+  .nav-toggle{display:none;width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid #e4e4e4;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(107,107,107,.06);cursor:pointer;font-size:17px;position:relative;z-index:61;transition:transform .2s ease}
+  .nav-toggle:active{transform:scale(.92)}
+  .nav-links{display:flex;align-items:center;gap:clamp(18px,2.4vw,34px);flex-wrap:wrap}
+  .nav-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:55}
+  .nav-backdrop.open{opacity:1;pointer-events:auto}
+  @media (max-width:760px){
+    .nav-toggle{display:flex}
+    .nav-links{position:fixed;top:0;left:0;right:0;height:auto;max-height:100dvh;width:100%;background:#fff;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:76px clamp(22px,6vw,40px) 24px;box-shadow:0 24px 50px rgba(0,0,0,.18);transform:translateY(-100%);transition:transform .45s cubic-bezier(.22,1,.36,1);z-index:60;flex-wrap:nowrap;overflow-y:auto;border-radius:0}
+    .nav-links.open{transform:translateY(0)}
+    .nav-links a{position:static !important;transform:none !important;display:flex !important;align-items:center;justify-content:space-between;width:100%;font-size:clamp(32px,10.5vw,46px);font-weight:600;padding:24px 0;border-bottom:1px solid #ececec;background-image:none !important;color:#171717}
+    .nav-links a.nav-cta{display:none !important}
+  }
+  @media (max-width:420px){
+    .nav-badge-text{display:none}
+  }
+  .hero-photo-wrap{display:contents}
+  .hero-badge{display:none}
+  .hero-mobile-info{display:none}
+  .hnt-outline{color:transparent;-webkit-text-stroke:3px #171717}
+  .hnt-solid{color:#171717}
+  @media (max-width:760px){
+    .hero-name-desktop{display:none !important}
+  }
+  @media (max-width:760px){
+    .hero-header{height:auto !important;min-height:0 !important;overflow:visible !important;display:flex !important;flex-direction:column;align-items:center;padding-bottom:56px}
+    .hero-desktop-content{display:none !important}
+    [data-hero]{position:relative !important;inset:auto !important;left:50% !important;z-index:1 !important;transform:translateX(calc(-50% + 4px)) !important;width:108% !important;max-width:460px;height:auto !important;aspect-ratio:1.3;object-fit:cover;object-position:50% 100%;margin:56px 0 0;display:block}
+    .hero-photo-wrap{display:block !important;position:relative;width:100%}
+    .hero-badge{display:block;position:absolute;z-index:4}
+    .hero-badge a{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:12.5px;font-weight:500;box-shadow:0 6px 16px rgba(0,0,0,.09);white-space:nowrap;color:#171717}
+    .hero-badge-tl{top:24%;left:2%}
+    .hero-badge-tr{top:32%;right:1%}
+    .hero-badge-bl{top:56%;left:-1%}
+    .hero-badge-br{top:78%;right:2%}
+    .hero-mobile-info{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:32px 26px 0;position:relative;z-index:1}
+    .hero-dot{width:11px;height:11px;border-radius:50%;background:#171717}
+    .hero-mobile-name{font-family:'Anton',sans-serif;font-size:clamp(42px,13vw,60px);line-height:.9;letter-spacing:.08em;margin:0}
+    .hero-mobile-name span{display:block}
+    .hero-mobile-name .hnt-solid{margin-top:10px}
+    .hero-mobile-name .hnt-outline{-webkit-text-stroke:2px #171717}
+    .hero-mobile-role{font-family:'Manrope',sans-serif;font-weight:700;font-size:19px;margin:2px 0 0}
+    .hero-mobile-desc{color:#7a7a7a;font-size:15px;line-height:1.7;max-width:320px;margin:0}
+    .hero-mobile-cta{margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:999px;background:#171717;color:#f9f9f9;font-weight:500;font-size:15px}
+  }
+  @media (hover:hover) and (pointer:fine){body{cursor:none}a,button{cursor:none}}
+</style>
+</helmet>
+
+<div data-cursor style="position:fixed;top:0;left:0;width:22px;height:22px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:opacity .2s;opacity:0"></div>
+
+<header data-screen-label="Hero" class="hero-header" style="position:relative;width:100%;height:100dvh;min-height:620px;overflow:hidden;background:#f9f8f6">
+  <div class="hero-name-desktop" style="display:flex;align-items:flex-start;justify-content:center;width:100%;padding-top:clamp(146px,20.5vh,222px);pointer-events:none;text-align:center">
+    <div style="font-family:'Anton',sans-serif;line-height:.85;letter-spacing:.4em;display:flex;align-items:baseline;gap:40px;white-space:nowrap">
+      <span class="hnt-outline" style="font-size:clamp(60px,10.3vw,156px)">ANDREJ</span>
+      <span class="hnt-solid" style="font-size:clamp(60px,10.3vw,156px)">DOSTANIĆ</span>
+    </div>
+  </div>
+  <div class="hero-photo-wrap">
+    <img data-hero src="cutout.png" alt="Andrej Dostanić" style="position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform-origin:50% 100%;transform:scale(0.78)">
+    <div class="hero-badge hero-badge-tl">
+      <a href="https://github.com/adostanic-git" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" style="width:15px;height:15px;flex-shrink:0" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+    <div class="hero-badge hero-badge-tr">
+      <a href="https://www.linkedin.com/in/andrej-dostanic-dev/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" style="width:15px;height:15px;flex-shrink:0" fill="currentColor" aria-hidden="true"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+    </div>
+    <div class="hero-badge hero-badge-bl">
+      <a href="#contact">
+        <span style="font-size:14px;line-height:1">🏢</span>
+        <span>Afera</span>
+      </a>
+    </div>
+    <div class="hero-badge hero-badge-br">
+      <a href="mailto:andrej.afera@gmail.com?subject=Radimo%20zajedno">
+        <span style="font-size:14px;line-height:1">✉️</span>
+        <span>Kontakt</span>
+      </a>
+    </div>
+  </div>
+  <nav style="position:absolute;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:clamp(18px,2.4vw,32px) clamp(20px,4.4vw,64px)">
+    <div style="display:flex;align-items:center;gap:14px;min-width:0">
+      <img src="AD_logo.png" alt="AD" style="height:38px;width:auto;object-fit:contain;display:block;flex-shrink:0">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:14px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06)">
+        <span data-dot style="width:8px;height:8px;border-radius:50%;background:#22c45e;flex-shrink:0;animation:pulse 1.8s ease-in-out infinite"></span>
+        <span class="nav-badge-text">Dostupan za nove projekte</span>
+      </div>
+    </div>
+    <button class="nav-toggle" data-nav-toggle type="button" aria-label="Meni" aria-expanded="false">☰</button>
+    <div class="nav-links" data-nav-links>
+      <a href="#work" style="position:relative;display:inline-flex;align-items:center;font-weight:500;font-size:16px;padding-bottom:3px;background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .4s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1),color .25s ease" style-hover="background-size:100% 1.5px;transform:translateY(-3px);color:#171717">Projekti</a>
+      <a href="#service" style="position:relative;display:inline-flex;align-items:center;font-weight:500;font-size:16px;padding-bottom:3px;background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .4s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1),color .25s ease" style-hover="background-size:100% 1.5px;transform:translateY(-3px);color:#171717">Usluge</a>
+      <a href="#experience" style="position:relative;display:inline-flex;align-items:center;font-weight:500;font-size:16px;padding-bottom:3px;background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .4s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1),color .25s ease" style-hover="background-size:100% 1.5px;transform:translateY(-3px);color:#171717">Zašto raditi sa mnom</a>
+      <a href="#contact" style="position:relative;display:inline-flex;align-items:center;font-weight:500;font-size:16px;padding-bottom:3px;background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .4s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1),color .25s ease" style-hover="background-size:100% 1.5px;transform:translateY(-3px);color:#171717">Kontakt</a>
+      <a href="#work" class="nav-cta" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:999px;background:#171717;color:#f9f9f9;border:1px solid #3f3f46;font-weight:500;font-size:15px;box-shadow:0 4px 5px rgba(0,0,0,.2);transition:background .18s ease,transform .18s ease" style-hover="background:#282828;transform:translateY(-2px)" style-active="transform:scale(.96)">Pogledaj radove</a>
+    </div>
+    <div class="nav-backdrop" data-nav-backdrop></div>
+  </nav>
+
+  <div class="hero-desktop-content" style="position:absolute;left:0;right:0;bottom:clamp(30px,5vh,58px);z-index:3;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:28px;padding:0 clamp(20px,4.4vw,64px)">
+    <div style="max-width:420px;display:flex;flex-direction:column;gap:20px;transform:translateY(-28px)">
+      <h1 style="font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(26px,2.6vw,32px);line-height:1.15">Web Developer</h1>
+      <p style="color:#525252;font-size:16px;line-height:1.6;font-weight:500;text-wrap:pretty;margin-top:-10px">Gradim brze, pouzdane i pažljivo dizajnirane web sajtove i aplikacije — od ideje do koda koji radi u produkciji.</p>
+      <a href="mailto:andrej.afera@gmail.com?subject=Radimo%20zajedno" style="align-self:flex-start;margin-left:-12px;display:inline-flex;align-items:center;gap:8px;padding:12px 16px 12px 24px;border-radius:999px;background:#171717;color:#f9f9f9;font-weight:500;font-size:15px;border:1px solid #3f3f46;box-shadow:0 4px 5px rgba(0,0,0,.2);transition:background .18s ease,transform .18s ease" style-hover="background:#282828;transform:translateY(-2px)" style-active="transform:scale(.95)">
+        <span>Radimo zajedno</span>
+        <span style="width:20px;height:20px;display:inline-flex"><svg viewBox="0 0 20 20" fill="none" style="width:100%;height:100%"><path d="M15.625 5V13.125C15.625 13.2908 15.5592 13.4497 15.4419 13.5669C15.3247 13.6842 15.1658 13.75 15 13.75C14.8342 13.75 14.6753 13.6842 14.5581 13.5669C14.4408 13.4497 14.375 13.2908 14.375 13.125V6.50859L5.44219 15.4422C5.32491 15.5595 5.16585 15.6253 5 15.6253C4.83415 15.6253 4.67509 15.5595 4.55781 15.4422C4.44054 15.3249 4.37465 15.1659 4.37465 15C4.37465 14.8341 4.44054 14.6751 4.55781 14.5578L13.4914 5.625H6.875C6.70924 5.625 6.55027 5.55915 6.43306 5.44194C6.31585 5.32473 6.25 5.16576 6.25 5C6.25 4.83424 6.31585 4.67527 6.43306 4.55806C6.55027 4.44085 6.70924 4.375 6.875 4.375H15C15.1658 4.375 15.3247 4.44085 15.4419 4.55806C15.5592 4.67527 15.625 4.83424 15.625 5Z" fill="#F9F9F9"/></svg></span>
+      </a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-end;transform:translateY(-28px)">
+      <a href="https://github.com/adostanic-git" target="_blank" rel="noopener noreferrer" style="width:190px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:13px 24px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:17px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06);transition:transform .2s ease,background .2s ease" style-hover="transform:translateX(-4px);background:#f1f1f1">
+        <svg viewBox="0 0 16 16" style="width:21px;height:21px;flex-shrink:0" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <a href="https://www.linkedin.com/in/andrej-dostanic-dev/" target="_blank" rel="noopener noreferrer" style="width:190px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:13px 24px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:17px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06);transition:transform .2s ease,background .2s ease" style-hover="transform:translateX(-4px);background:#f1f1f1">
+        <svg viewBox="0 0 16 16" style="width:21px;height:21px;flex-shrink:0" fill="currentColor" aria-hidden="true"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+      <a href="#contact" style="width:190px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:13px 24px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:17px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06);transition:transform .2s ease,background .2s ease" style-hover="transform:translateX(-4px);background:#f1f1f1">
+        <span style="font-size:19px;line-height:1">🏢</span>
+        <span>Afera</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-mobile-info">
+    <span class="hero-dot"></span>
+    <p class="hero-mobile-name"><span class="hnt-outline">ANDREJ</span><span class="hnt-solid">DOSTANIĆ</span></p>
+    <p class="hero-mobile-role">Web Developer</p>
+    <p class="hero-mobile-desc">Gradim brze, pouzdane i pažljivo dizajnirane web sajtove i aplikacije — od ideje do koda koji radi u produkciji.</p>
+    <a class="hero-mobile-cta" href="mailto:andrej.afera@gmail.com?subject=Radimo%20zajedno">Radimo zajedno</a>
+  </div>
+</header>
+
+<section id="work" data-screen-label="Projekti" style="position:relative;width:100%;padding:clamp(110px,13vw,180px) 0 clamp(90px,10vw,140px);display:flex;flex-direction:column;align-items:center;gap:68px">
+  <p style="position:absolute;top:28px;left:50%;transform:translateX(-50%);font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(38px,11vw,140px);color:#e4e4e4;opacity:.4;letter-spacing:14px;white-space:nowrap;pointer-events:none;user-select:none;line-height:1.6">PROJEKTI</p>
+  <div style="width:980px;max-width:100%;padding:0 20px;display:flex;flex-direction:column;gap:48px">
+    <p data-reveal style="font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(30px,4.5vw,56px);text-align:center;position:relative;z-index:1">/IZABRANI RADOVI</p>
+    <div data-reveal style="display:flex;gap:32px;font-weight:600;font-size:16px;flex-wrap:wrap">
+      <button data-filter="all" style="color:#171717;transition:color .18s ease">Svi</button>
+      <button data-filter="real" style="color:#a2a2a2;transition:color .18s ease">Realni projekti</button>
+      <button data-filter="exploration" style="color:#a2a2a2;transition:color .18s ease">Vežbe</button>
+    </div>
+    <div data-grid style="display:flex;flex-wrap:wrap;gap:48px">
+      <div data-card data-cat="exploration" data-reveal style="background:#ffffff;position:relative;width:466px;max-width:100%;flex:1 1 400px;border:1px solid #e4e4e4;box-shadow:0 9px 24px rgba(107,107,107,.12);cursor:pointer">
+        <div data-thumb style="position:relative;width:100%;height:clamp(210px,52vw,330px);overflow:hidden;background:repeating-linear-gradient(135deg,#ececec,#ececec 10px,#f2f2f2 10px,#f2f2f2 20px);display:flex;align-items:center;justify-content:center">
+          <img src="projects/nba-court-edge.png" alt="NBA Court Edge" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transition:transform .55s cubic-bezier(.22,1,.36,1)">
+          <span style="position:absolute;top:12px;left:12px;background:#f9f9f9;color:#525252;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px">PROJEKAT</span>
+          <div data-overlay style="position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s"></div>
+          <div data-arrow style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.5);opacity:0;background:#fff;border:1px solid #e4e4e4;border-radius:999px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;transition:opacity .28s,transform .28s cubic-bezier(.34,1.56,.64,1)">↗</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;padding:16px 16px 32px">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:22px;color:#525252;line-height:1.4;min-height:31px">NBA Court Edge</h3>
+          <p style="color:#a2a2a2;font-size:15px;margin:-8px 0 0">Sajt za statistiku NBA mečeva</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">Web App</span><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">React</span></div>
+        </div>
+      </div>
+      <div data-card data-cat="real" data-reveal style="background:#ffffff;position:relative;width:466px;max-width:100%;flex:1 1 400px;border:1px solid #e4e4e4;box-shadow:0 9px 24px rgba(107,107,107,.12);cursor:pointer">
+        <div data-thumb style="position:relative;width:100%;height:clamp(210px,52vw,330px);overflow:hidden;background:repeating-linear-gradient(135deg,#ececec,#ececec 10px,#f2f2f2 10px,#f2f2f2 20px);display:flex;align-items:center;justify-content:center">
+          <img src="projects/sredami-meni.png" alt="Sredami Meni" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transition:transform .55s cubic-bezier(.22,1,.36,1)">
+          <span style="position:absolute;top:12px;left:12px;background:#f9f9f9;color:#525252;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px">PROJEKAT</span>
+          <div data-overlay style="position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s"></div>
+          <div data-arrow style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.5);opacity:0;background:#fff;border:1px solid #e4e4e4;border-radius:999px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;transition:opacity .28s,transform .28s cubic-bezier(.34,1.56,.64,1)">↗</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;padding:16px 16px 32px">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:22px;color:#525252;line-height:1.4;min-height:31px">Sredami Meni</h3>
+          <p style="color:#a2a2a2;font-size:15px;margin:-8px 0 0">Digitalni meni za kafić</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">Landing Page</span></div>
+        </div>
+      </div>
+      <div data-card data-cat="real" data-reveal style="background:#ffffff;position:relative;width:466px;max-width:100%;flex:1 1 400px;border:1px solid #e4e4e4;box-shadow:0 9px 24px rgba(107,107,107,.12);cursor:pointer">
+        <div data-thumb style="position:relative;width:100%;height:clamp(210px,52vw,330px);overflow:hidden;background:repeating-linear-gradient(135deg,#ececec,#ececec 10px,#f2f2f2 10px,#f2f2f2 20px);display:flex;align-items:center;justify-content:center">
+          <img src="projects/ancora-ai.png" alt="Ancora AI" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transition:transform .55s cubic-bezier(.22,1,.36,1)">
+          <span style="position:absolute;top:12px;left:12px;background:#f9f9f9;color:#525252;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px">PROJEKAT</span>
+          <div data-overlay style="position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s"></div>
+          <div data-arrow style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.5);opacity:0;background:#fff;border:1px solid #e4e4e4;border-radius:999px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;transition:opacity .28s,transform .28s cubic-bezier(.34,1.56,.64,1)">↗</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;padding:16px 16px 32px">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:22px;color:#525252;line-height:1.4;min-height:31px">Ancora AI</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">AI</span><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">SaaS</span></div>
+        </div>
+      </div>
+      <div data-card data-cat="real" data-reveal style="background:#ffffff;position:relative;width:466px;max-width:100%;flex:1 1 400px;border:1px solid #e4e4e4;box-shadow:0 9px 24px rgba(107,107,107,.12);cursor:pointer">
+        <div data-thumb style="position:relative;width:100%;height:clamp(210px,52vw,330px);overflow:hidden;background:repeating-linear-gradient(135deg,#ececec,#ececec 10px,#f2f2f2 10px,#f2f2f2 20px);display:flex;align-items:center;justify-content:center">
+          <img src="projects/matiola-flowershop.jpg" alt="Matiola Cvećara" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transition:transform .55s cubic-bezier(.22,1,.36,1)">
+          <span style="position:absolute;top:12px;left:12px;background:#f9f9f9;color:#525252;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px">PROJEKAT</span>
+          <div data-overlay style="position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s"></div>
+          <div data-arrow style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.5);opacity:0;background:#fff;border:1px solid #e4e4e4;border-radius:999px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;transition:opacity .28s,transform .28s cubic-bezier(.34,1.56,.64,1)">↗</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;padding:16px 16px 32px">
+          <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:22px;color:#525252;line-height:1.4;min-height:31px">Matiola Cvećara</h3>
+          <p style="color:#a2a2a2;font-size:15px;margin:-8px 0 0">Sajt za cvećaru</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">Landing Page</span><span style="background:#f9f9f9;border:1px solid #e4e4e4;border-radius:99px;padding:7px 14px;font-size:14px;color:#525252">Cvećara</span></div>
+        </div>
+      </div>
+    </div>
+    <div data-reveal style="display:flex;justify-content:center">
+      <a href="#work" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-weight:500;font-size:15px;transition:background .18s ease,transform .18s ease" style-hover="background:#f1f1f1;transform:translateY(-2px)">Svi projekti ↗</a>
+    </div>
+  </div>
+</section>
+
+<section id="service" data-screen-label="Usluge" style="position:relative;background:#f9f8f6;padding:clamp(70px,8vw,100px) clamp(20px,4.4vw,64px);display:flex;flex-direction:column;gap:60px;overflow:hidden">
+  <p style="position:absolute;top:28px;left:50%;transform:translateX(-50%);font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(38px,11vw,140px);color:#e4e4e4;opacity:.4;letter-spacing:14px;white-space:nowrap;pointer-events:none;user-select:none;line-height:1.6">USLUGE</p>
+  <p data-reveal style="font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(30px,4.5vw,56px);text-align:center;position:relative;z-index:1">/USLUGE</p>
+  <div style="display:flex;flex-direction:column;width:100%">
+    <div data-reveal>
+      <div data-row style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:32px 16px;border-bottom:1px solid #525252;gap:24px;transition:background .2s;cursor:pointer">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(22px,4vw,52px);flex:1;word-break:break-word">FRONTEND DEVELOPMENT</h3>
+        <div data-icon style="width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .3s ease">＋</div>
+      </div>
+      <div data-desc style="max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1),padding .4s;padding:0 16px;color:#e4e4e4;font-size:16px;line-height:1.7;background:#262626">Izrada brzih, responzivnih i pristupačnih korisničkih interfejsa u React-u, HTML-u, CSS-u i JavaScript-u, od dizajna do koda.</div>
+    </div>
+    <div data-reveal>
+      <div data-row style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:32px 16px;border-bottom:1px solid #525252;gap:24px;transition:background .2s;cursor:pointer">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(22px,4vw,52px);flex:1;word-break:break-word">FULL-STACK WEB APLIKACIJE</h3>
+        <div data-icon style="width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .3s ease">＋</div>
+      </div>
+      <div data-desc style="max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1),padding .4s;padding:0 16px;color:#e4e4e4;font-size:16px;line-height:1.7;background:#262626">Kompletne veb aplikacije — baza podataka, server i klijentski deo — spojeni u jedan pouzdan i skalabilan proizvod.</div>
+    </div>
+    <div data-reveal>
+      <div data-row style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:32px 16px;border-bottom:1px solid #525252;gap:24px;transition:background .2s;cursor:pointer">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(22px,4vw,52px);flex:1;word-break:break-word">API RAZVOJ I INTEGRACIJE</h3>
+        <div data-icon style="width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .3s ease">＋</div>
+      </div>
+      <div data-desc style="max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1),padding .4s;padding:0 16px;color:#e4e4e4;font-size:16px;line-height:1.7;background:#262626">Projektovanje i povezivanje API-ja, integracija sa spoljnim servisima i automatizacija tokova podataka.</div>
+    </div>
+    <div data-reveal>
+      <div data-row style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:32px 16px;border-bottom:1px solid #525252;gap:24px;transition:background .2s;cursor:pointer">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(22px,4vw,52px);flex:1;word-break:break-word">OPTIMIZACIJA I ODRŽAVANJE</h3>
+        <div data-icon style="width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .3s ease">＋</div>
+      </div>
+      <div data-desc style="max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1),padding .4s;padding:0 16px;color:#e4e4e4;font-size:16px;line-height:1.7;background:#262626">Poboljšanje brzine, SEO-a i stabilnosti postojećih sajtova, kao i redovno održavanje i nadogradnje.</div>
+    </div>
+    <div data-reveal>
+      <div data-row style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:32px 16px;border-bottom:1px solid #525252;gap:24px;transition:background .2s;cursor:pointer">
+        <h3 style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(22px,4vw,52px);flex:1;word-break:break-word">E-COMMERCE REŠENJA</h3>
+        <div data-icon style="width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .3s ease">＋</div>
+      </div>
+      <div data-desc style="max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1),padding .4s;padding:0 16px;color:#e4e4e4;font-size:16px;line-height:1.7;background:#262626">Online prodavnice prilagođene potrebama biznisa — od kataloga proizvoda do plaćanja i naloga korisnika.</div>
+    </div>
+  </div>
+</section>
+
+<section id="experience" data-screen-label="Zašto raditi sa mnom" class="wr-section" style="position:relative;background:#262626;display:flex;flex-direction:column;overflow:hidden">
+  <p style="position:absolute;top:28px;left:50%;transform:translateX(-50%);font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(38px,11vw,140px);color:#404040;opacity:.4;letter-spacing:14px;white-space:nowrap;pointer-events:none;user-select:none;line-height:1.6">ZAŠTO JA</p>
+
+  <div data-reveal style="display:flex;flex-direction:column;gap:14px;max-width:640px;position:relative;z-index:1">
+    <h2 style="font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(30px,4.5vw,56px);color:#f9f9f9">/ZAŠTO RADITI SA MNOM</h2>
+    <p style="color:#a2a2a2;font-size:16px;line-height:1.7;text-wrap:pretty">Manje praznih obećanja, više isporučenih usluga. Evo šta konkretno dobijaš kad radimo zajedno.</p>
+  </div>
+
+  <div data-reveal class="wr-stats" style="position:relative;z-index:1;display:flex;flex-wrap:wrap">
+    <div class="wr-stat">
+      <span class="wr-stat-num"><span data-count data-target="3" data-suffix="+">0</span></span>
+      <span class="wr-stat-label">Godine iskustva</span>
+    </div>
+    <div class="wr-stat">
+      <span class="wr-stat-num"><span data-count data-target="10" data-suffix="+">0</span></span>
+      <span class="wr-stat-label">Isporučenih projekata</span>
+    </div>
+    <div class="wr-stat">
+      <span class="wr-stat-num">&lt;<span data-count data-target="24" data-suffix="h">0</span></span>
+      <span class="wr-stat-label">Prosečno vreme odgovora</span>
+    </div>
+    <div class="wr-stat">
+      <span class="wr-stat-num"><span data-count data-target="100" data-suffix="%">0</span></span>
+      <span class="wr-stat-label">Posvećenost projektu</span>
+    </div>
+  </div>
+
+  <div class="wr-grid" style="position:relative;z-index:1;display:flex;flex-wrap:wrap">
+    <div data-reveal class="wr-card">
+      <div class="wr-card-head">
+        <h3 class="wr-title">Brzina isporuke</h3>
+        <div class="wr-icon">⚡</div>
+      </div>
+      <p class="wr-desc">Bez čekanja i praznog hoda — jasni rokovi i redovni update-i o napretku projekta.</p>
+    </div>
+    <div data-reveal class="wr-card">
+      <div class="wr-card-head">
+        <h3 class="wr-title">Fokus na rezultat</h3>
+        <div class="wr-icon">🎯</div>
+      </div>
+      <p class="wr-desc">Ne pravim samo "lep sajt" — gradim rešenje koje donosi merljive rezultate: brzinu, konverzije, UX.</p>
+    </div>
+    <div data-reveal class="wr-card">
+      <div class="wr-card-head">
+        <h3 class="wr-title">Čist, održiv kod</h3>
+        <div class="wr-icon">🧩</div>
+      </div>
+      <p class="wr-desc">Kod koji je lako nastaviti i proširiti — bez tehničkog duga koji te sustiže kasnije.</p>
+    </div>
+    <div data-reveal class="wr-card">
+      <div class="wr-card-head">
+        <h3 class="wr-title">Direktna komunikacija</h3>
+        <div class="wr-icon">💬</div>
+      </div>
+      <p class="wr-desc">Uvek znaš gde je projekat — bez žargona i nejasnih izveštaja, na vreme.</p>
+    </div>
+    <div data-reveal class="wr-card">
+      <div class="wr-card-head">
+        <h3 class="wr-title">Moderne tehnologije</h3>
+        <div class="wr-icon">🚀</div>
+      </div>
+      <p class="wr-desc">React, Next.js i savremeni alati — sajtovi spremni za rast, ne za zastarevanje.</p>
+    </div>
+    <div data-reveal class="wr-card">
+      <div class="wr-card-head">
+        <h3 class="wr-title">Podrška posle isporuke</h3>
+        <div class="wr-icon">🤝</div>
+      </div>
+      <p class="wr-desc">Ostajem dostupan i nakon lansiranja — izmene, unapređenja, mir u glavi.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="Kontakt" style="position:relative;padding:clamp(70px,8vw,100px) clamp(20px,4.4vw,64px) 20px;min-height:100dvh;display:flex;flex-direction:column;align-items:center;background:url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%271200%27%20height=%271200%27%3E%3Cfilter%20id=%27n%27%3E%3CfeTurbulence%20type=%27fractalNoise%27%20baseFrequency=%270.009%27%20numOctaves=%274%27%20seed=%2723%27/%3E%3CfeColorMatrix%20type=%27matrix%27%20values=%270%200%200%200%201%200%200%200%200%201%200%200%200%200%201%200%200%200%200.85%200%27/%3E%3C/filter%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20filter=%27url(%23n)%27/%3E%3C/svg%3E') center/cover no-repeat,radial-gradient(ellipse at top,#e4e8ec 0%,#d5dae0 55%,#c5ccd4 100%);overflow:hidden">
+  <div data-reveal style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;text-align:center;padding:20px 0 70px">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:14px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06)">
+      <span data-dot style="width:8px;height:8px;border-radius:50%;background:#22c45e;flex-shrink:0;animation:pulse 1.8s ease-in-out infinite"></span>
+      <span>Dostupan za nove projekte</span>
+    </div>
+    <h2 style="font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(30px,7vw,64px)">IMAŠ PROJEKAT NA UMU?</h2>
+    <p style="color:#525252;font-size:18px;line-height:1.8;max-width:620px;text-wrap:pretty">Bilo da pokrećeš novi proizvod, unapređuješ postojeći sajt ili ti treba kompletna web aplikacija — rado ću pomoći da ideju pretvorimo u gotov proizvod.</p>
+    <a href="mailto:andrej.afera@gmail.com?subject=Radimo%20zajedno" style="display:inline-flex;align-items:center;gap:8px;padding:12px 16px 12px 24px;border-radius:999px;background:#171717;color:#f9f9f9;font-weight:500;font-size:15px;border:1px solid #3f3f46;box-shadow:0 4px 5px rgba(0,0,0,.2);transition:background .18s ease,transform .18s ease" style-hover="background:#282828;transform:translateY(-2px)" style-active="transform:scale(.95)">
+      <span>Pokreni razgovor</span>
+      <span style="width:20px;height:20px;display:inline-flex"><svg viewBox="0 0 20 20" fill="none" style="width:100%;height:100%"><path d="M15.625 5V13.125C15.625 13.2908 15.5592 13.4497 15.4419 13.5669C15.3247 13.6842 15.1658 13.75 15 13.75C14.8342 13.75 14.6753 13.6842 14.5581 13.5669C14.4408 13.4497 14.375 13.2908 14.375 13.125V6.50859L5.44219 15.4422C5.32491 15.5595 5.16585 15.6253 5 15.6253C4.83415 15.6253 4.67509 15.5595 4.55781 15.4422C4.44054 15.3249 4.37465 15.1659 4.37465 15C4.37465 14.8341 4.44054 14.6751 4.55781 14.5578L13.4914 5.625H6.875C6.70924 5.625 6.55027 5.55915 6.43306 5.44194C6.31585 5.32473 6.25 5.16576 6.25 5C6.25 4.83424 6.31585 4.67527 6.43306 4.55806C6.55027 4.44085 6.70924 4.375 6.875 4.375H15C15.1658 4.375 15.3247 4.44085 15.4419 4.55806C15.5592 4.67527 15.625 4.83424 15.625 5Z" fill="#F9F9F9"/></svg></span>
+    </a>
+  </div>
+  <div data-reveal class="footer-row" style="width:100%;margin-top:auto;padding-top:24px;margin-bottom:60px;display:grid;grid-template-columns:auto 1fr auto auto auto;grid-template-areas:'a . c d b';align-items:center;gap:14px">
+    <div class="footer-pill footer-name" style="grid-area:a;display:inline-flex;align-items:center;gap:16px;background:#171717;border:1px solid #fff;color:#f9f9f9;padding:8px 20px 8px 8px;border-radius:999px;font-weight:600;font-size:16px">
+      <img src="avatar.jpg" alt="Andrej Dostanić" style="width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:50% 20%">
+      <span>Andrej Dostanić</span>
+    </div>
+    <a href="https://github.com/adostanic-git" target="_blank" rel="noopener noreferrer" class="footer-pill" style="grid-area:c;display:inline-flex;align-items:center;gap:9px;padding:15px 20px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:16px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06);transition:transform .2s ease,background .2s ease" style-hover="transform:translateY(-3px);background:#f1f1f1">
+        <svg viewBox="0 0 16 16" style="width:17px;height:17px;flex-shrink:0" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+    <a href="https://www.linkedin.com/in/andrej-dostanic-dev/" target="_blank" rel="noopener noreferrer" class="footer-pill" style="grid-area:d;display:inline-flex;align-items:center;gap:9px;padding:15px 20px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:16px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06);transition:transform .2s ease,background .2s ease" style-hover="transform:translateY(-3px);background:#f1f1f1">
+        <svg viewBox="0 0 16 16" style="width:17px;height:17px;flex-shrink:0" fill="currentColor" aria-hidden="true"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+    <a href="#contact" class="footer-pill" style="grid-area:b;display:inline-flex;align-items:center;gap:9px;padding:15px 20px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:16px;font-weight:500;box-shadow:0 4px 10px rgba(107,107,107,.06);transition:transform .2s ease,background .2s ease" style-hover="transform:translateY(-3px);background:#f1f1f1">
+        <span style="font-size:17px;line-height:1">🏢</span>
+        <span>Poslovna Firma - Afera</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroZoom&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.9,&quot;min&quot;:0.65,&quot;max&quot;:1.2,&quot;step&quot;:0.01,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#22c45e&quot;,&quot;options&quot;:[&quot;#22c45e&quot;,&quot;#171717&quot;,&quot;#e0b400&quot;,&quot;#3b82f6&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Stil&quot;},&quot;customCursor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Stil&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    const zoom = this.props.heroZoom ?? 0.9;
+    const hero = document.querySelector('[data-hero]');
+    if (hero) {
+      hero.style.transformOrigin = '50% 100%';
+      hero.style.transform = 'translateX(-20px) scale(' + zoom + ')';
+    }
+
+    const accent = this.props.accentColor ?? '#22c45e';
+    document.querySelectorAll('[data-dot]').forEach(d => { d.style.background = accent; });
+
+    const dot = document.querySelector('[data-cursor]');
+    const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+    if (dot && fine && (this.props.customCursor ?? true)) {
+      window.addEventListener('mousemove', e => {
+        dot.style.opacity = 1;
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+      });
+    } else if (dot) {
+      dot.style.display = 'none';
+      document.body.style.cursor = 'auto';
+    }
+
+    const navToggle = document.querySelector('[data-nav-toggle]');
+    const navLinks = document.querySelector('[data-nav-links]');
+    const navBackdrop = document.querySelector('[data-nav-backdrop]');
+    const closeNav = () => {
+      navLinks.classList.remove('open');
+      navBackdrop.classList.remove('open');
+      navToggle.textContent = '☰';
+      navToggle.setAttribute('aria-expanded', 'false');
+    };
+    const openNav = () => {
+      navLinks.classList.add('open');
+      navBackdrop.classList.add('open');
+      navToggle.textContent = '✕';
+      navToggle.setAttribute('aria-expanded', 'true');
+    };
+    if (navToggle && navLinks && navBackdrop) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.contains('open') ? closeNav() : openNav();
+      });
+      navBackdrop.addEventListener('click', closeNav);
+      navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+
+    const reveals = [...document.querySelectorAll('[data-reveal]')];
+    reveals.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+      el.style.transition = 'opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)';
+    });
+    ['[data-grid]', '#service', '#experience'].forEach(sel => {
+      const scope = document.querySelector(sel);
+      if (scope) scope.querySelectorAll('[data-reveal]').forEach((el, i) => { el.style.transitionDelay = (i * 100) + 'ms'; });
+    });
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+
+    document.querySelectorAll('[data-row]').forEach(row => {
+      row.addEventListener('click', () => {
+        const desc = row.parentElement.querySelector('[data-desc]');
+        const open = desc.style.maxHeight && desc.style.maxHeight !== '0px';
+        document.querySelectorAll('[data-desc]').forEach(d => { d.style.maxHeight = '0px'; d.style.padding = '0 16px'; });
+        document.querySelectorAll('[data-icon]').forEach(ic => { ic.textContent = '＋'; ic.style.transform = 'rotate(0deg)'; ic.style.color = ''; });
+        document.querySelectorAll('[data-row]').forEach(r => { r.style.background = ''; r.style.borderBottomColor = ''; });
+        document.querySelectorAll('[data-row] h3').forEach(h => { h.style.color = ''; });
+        if (!open) {
+          desc.style.maxHeight = '220px';
+          desc.style.padding = '24px 16px 32px';
+          const ic = row.querySelector('[data-icon]');
+          ic.textContent = '×';
+          ic.style.transform = 'rotate(180deg)';
+          ic.style.color = '#e4e4e4';
+          row.style.background = '#262626';
+          row.style.borderBottomColor = '#262626';
+          row.querySelector('h3').style.color = '#e4e4e4';
+        }
+      });
+    });
+    const first = document.querySelector('[data-row]');
+    if (first) first.click();
+
+    const projectLinks = [
+      'https://nba-court-edge-seven.vercel.app/auth',
+      'https://sredami-meni.netlify.app/',
+      'https://ancora-ai.vercel.app/',
+      'https://matiola-flowershop.vercel.app/'
+    ];
+    document.querySelectorAll('[data-card]').forEach((card, i) => {
+      const url = projectLinks[i];
+      if (url) {
+        card.setAttribute('role', 'link');
+        card.addEventListener('click', () => window.open(url, '_blank', 'noopener'));
+        const arrow = card.querySelector('[data-arrow]');
+        if (arrow) arrow.title = url;
+      }
+      const overlay = card.querySelector('[data-overlay]');
+      const arrow = card.querySelector('[data-arrow]');
+      const shot = card.querySelector('[data-thumb] img');
+      card.addEventListener('mouseenter', () => {
+        if (shot) shot.style.transform = 'scale(1.06)';
+        overlay.style.background = 'rgba(0,0,0,.15)';
+        arrow.style.opacity = '1';
+        arrow.style.transform = 'translate(-50%,-50%) scale(1)';
+      });
+      card.addEventListener('mouseleave', () => {
+        if (shot) shot.style.transform = 'scale(1)';
+        overlay.style.background = 'rgba(0,0,0,0)';
+        arrow.style.opacity = '0';
+        arrow.style.transform = 'translate(-50%,-50%) scale(.5)';
+      });
+    });
+
+    const counters = [...document.querySelectorAll('[data-count]')];
+    const animateCount = el => {
+      const target = parseFloat(el.dataset.target || '0');
+      const suffix = el.dataset.suffix || '';
+      const dur = 1300;
+      const start = performance.now();
+      const step = now => {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const countIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { animateCount(e.target); countIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(el => countIO.observe(el));
+
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-filter]').forEach(b => { b.style.color = '#a2a2a2'; });
+        btn.style.color = '#171717';
+        const f = btn.dataset.filter;
+        document.querySelectorAll('[data-card]').forEach(card => {
+          card.style.display = (f === 'all' || card.dataset.cat === f) ? '' : 'none';
+        });
+      });
+    });
+  }
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
