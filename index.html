@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;overflow-x:hidden;}
   body{background:#f9f8f6;color:#171717;font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
   a{color:inherit;text-decoration:none;}
   a:hover{color:#525252;}
@@ -75,7 +75,7 @@
     .hero-name-desktop{display:none !important}
   }
   @media (max-width:760px){
-    .hero-header{height:auto !important;min-height:0 !important;overflow:visible !important;display:flex !important;flex-direction:column;align-items:center;padding-bottom:56px}
+    .hero-header{height:auto !important;min-height:0 !important;overflow-x:hidden !important;overflow-y:visible !important;display:flex !important;flex-direction:column;align-items:center;padding-bottom:56px}
     .hero-desktop-content{display:none !important}
     [data-hero]{position:relative !important;inset:auto !important;left:50% !important;z-index:1 !important;transform:translateX(calc(-50% + 4px)) !important;width:108% !important;max-width:460px;height:auto !important;aspect-ratio:1.3;object-fit:cover;object-position:50% 100%;margin:56px 0 0;display:block}
     .hero-photo-wrap{display:block !important;position:relative;width:100%}
@@ -188,7 +188,7 @@
   </div>
 </header>
 
-<section id="work" data-screen-label="Projekti" style="position:relative;width:100%;padding:clamp(110px,13vw,180px) 0 clamp(90px,10vw,140px);display:flex;flex-direction:column;align-items:center;gap:68px">
+<section id="work" data-screen-label="Projekti" style="position:relative;width:100%;padding:clamp(110px,13vw,180px) 0 clamp(90px,10vw,140px);display:flex;flex-direction:column;align-items:center;gap:68px;overflow:hidden">
   <p style="position:absolute;top:28px;left:50%;transform:translateX(-50%);font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(38px,11vw,140px);color:#e4e4e4;opacity:.4;letter-spacing:14px;white-space:nowrap;pointer-events:none;user-select:none;line-height:1.6">PROJEKTI</p>
   <div style="width:980px;max-width:100%;padding:0 20px;display:flex;flex-direction:column;gap:48px">
     <p data-reveal style="font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(30px,4.5vw,56px);text-align:center;position:relative;z-index:1">/IZABRANI RADOVI</p>
