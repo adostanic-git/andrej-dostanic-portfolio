@@ -693,6 +693,7 @@ class Component extends DCLogic {
       window.history.replaceState({}, '', window.location.pathname + (cleanQuery ? '?' + cleanQuery : '') + '#contact');
       openContact();
       if (contactStatus) { contactStatus.style.color = '#1a8a3a'; contactStatus.textContent = 'Hvala! Poruka je poslata, javiću ti se uskoro.'; }
+      setTimeout(closeContact, 3000);
     }
   }
   renderVals() { return {}; }
