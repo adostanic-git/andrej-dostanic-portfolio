@@ -156,7 +156,7 @@
       </a>
     </div>
     <div class="hero-badge hero-badge-br">
-      <a href="mailto:andrej.afera@gmail.com?subject=Radimo%20zajedno">
+      <a href="mailto:afera.andrej@gmail.com?subject=Radimo%20zajedno">
         <span style="font-size:14px;line-height:1">✉️</span>
         <span>Kontakt</span>
       </a>
@@ -185,10 +185,10 @@
     <div style="max-width:420px;display:flex;flex-direction:column;gap:20px;transform:translateY(-28px)">
       <h1 style="font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(26px,2.6vw,32px);line-height:1.15">Web Developer</h1>
       <p style="color:#525252;font-size:16px;line-height:1.6;font-weight:500;text-wrap:pretty;margin-top:-10px">Gradim brze, pouzdane i pažljivo dizajnirane web sajtove i aplikacije — od ideje do koda koji radi u produkciji.</p>
-      <a href="mailto:andrej.afera@gmail.com?subject=Radimo%20zajedno" style="align-self:flex-start;margin-left:-12px;display:inline-flex;align-items:center;gap:8px;padding:12px 16px 12px 24px;border-radius:999px;background:#171717;color:#f9f9f9;font-weight:500;font-size:15px;border:1px solid #3f3f46;box-shadow:0 4px 5px rgba(0,0,0,.2);transition:background .18s ease,transform .18s ease" style-hover="background:#282828;transform:translateY(-2px)" style-active="transform:scale(.95)">
+      <button type="button" data-open-contact style="align-self:flex-start;margin-left:-12px;display:inline-flex;align-items:center;gap:8px;padding:12px 16px 12px 24px;border-radius:999px;background:#171717;color:#f9f9f9;font-weight:500;font-size:15px;border:1px solid #3f3f46;box-shadow:0 4px 5px rgba(0,0,0,.2);transition:background .18s ease,transform .18s ease" style-hover="background:#282828;transform:translateY(-2px)" style-active="transform:scale(.95)">
         <span>Radimo zajedno</span>
         <span style="width:20px;height:20px;display:inline-flex"><svg viewBox="0 0 20 20" fill="none" style="width:100%;height:100%"><path d="M15.625 5V13.125C15.625 13.2908 15.5592 13.4497 15.4419 13.5669C15.3247 13.6842 15.1658 13.75 15 13.75C14.8342 13.75 14.6753 13.6842 14.5581 13.5669C14.4408 13.4497 14.375 13.2908 14.375 13.125V6.50859L5.44219 15.4422C5.32491 15.5595 5.16585 15.6253 5 15.6253C4.83415 15.6253 4.67509 15.5595 4.55781 15.4422C4.44054 15.3249 4.37465 15.1659 4.37465 15C4.37465 14.8341 4.44054 14.6751 4.55781 14.5578L13.4914 5.625H6.875C6.70924 5.625 6.55027 5.55915 6.43306 5.44194C6.31585 5.32473 6.25 5.16576 6.25 5C6.25 4.83424 6.31585 4.67527 6.43306 4.55806C6.55027 4.44085 6.70924 4.375 6.875 4.375H15C15.1658 4.375 15.3247 4.44085 15.4419 4.55806C15.5592 4.67527 15.625 4.83424 15.625 5Z" fill="#F9F9F9"/></svg></span>
-      </a>
+      </button>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-end;transform:translateY(-28px)">
       <div class="hero-qr-wrap">
@@ -450,7 +450,11 @@
     <button type="button" class="cf-close" data-contact-close aria-label="Zatvori formu">✕</button>
     <h3 id="cf-title" class="cf-title">Pokreni razgovor</h3>
     <p class="cf-desc">Popuni formu ispod i javiću ti se u najkraćem roku na email koji ostaviš.</p>
-    <form data-contact-form novalidate>
+    <form data-contact-form novalidate action="https://formsubmit.co/afera.andrej@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="Novi upit sa sajta - Radimo zajedno">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="" data-contact-next>
       <div class="cf-row">
         <div class="cf-field">
           <label for="cf-name">Ime i prezime</label>
@@ -670,32 +674,25 @@ class Component extends DCLogic {
       if (e.key === 'Escape' && contactOverlay && contactOverlay.classList.contains('open')) closeContact();
     });
     if (contactForm) {
-      contactForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        if (contactStatus) { contactStatus.textContent = ''; contactStatus.style.color = ''; }
+      const contactNext = contactForm.querySelector('[data-contact-next]');
+      contactForm.addEventListener('submit', () => {
+        if (contactNext) {
+          const url = new URL(window.location.href);
+          url.searchParams.set('sent', '1');
+          url.hash = '';
+          contactNext.value = url.toString();
+        }
         contactSubmit.disabled = true;
         if (contactSubmitText) contactSubmitText.textContent = 'Slanje...';
-        const data = new FormData(contactForm);
-        data.append('_subject', 'Novi upit sa sajta - Radimo zajedno');
-        data.append('_captcha', 'false');
-        data.append('_template', 'table');
-        try {
-          const res = await fetch('https://formsubmit.co/ajax/andrej.afera@gmail.com', {
-            method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: data
-          });
-          if (!res.ok) throw new Error('send failed');
-          contactForm.reset();
-          if (contactStatus) { contactStatus.style.color = '#1a8a3a'; contactStatus.textContent = 'Hvala! Poruka je poslata, javiću ti se uskoro.'; }
-          setTimeout(closeContact, 2200);
-        } catch (err) {
-          if (contactStatus) { contactStatus.style.color = '#c53030'; contactStatus.textContent = 'Nešto nije uspelo. Pokušaj ponovo ili piši direktno na andrej.afera@gmail.com.'; }
-        } finally {
-          contactSubmit.disabled = false;
-          if (contactSubmitText) contactSubmitText.textContent = 'Pošalji upit';
-        }
       });
+    }
+    const sentParams = new URLSearchParams(window.location.search);
+    if (sentParams.get('sent') === '1') {
+      sentParams.delete('sent');
+      const cleanQuery = sentParams.toString();
+      window.history.replaceState({}, '', window.location.pathname + (cleanQuery ? '?' + cleanQuery : '') + '#contact');
+      openContact();
+      if (contactStatus) { contactStatus.style.color = '#1a8a3a'; contactStatus.textContent = 'Hvala! Poruka je poslata, javiću ti se uskoro.'; }
     }
   }
   renderVals() { return {}; }
