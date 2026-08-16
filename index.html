@@ -106,7 +106,7 @@
     [data-hero]{position:relative !important;inset:auto !important;left:50% !important;z-index:1 !important;transform:translateX(calc(-50% + 4px)) !important;width:108% !important;max-width:460px;height:auto !important;aspect-ratio:1.3;object-fit:cover;object-position:50% 100%;margin:56px 0 0;display:block}
     .hero-photo-wrap{display:block !important;position:relative;width:100%}
     .hero-badge{display:block;position:absolute;z-index:4}
-    .hero-badge a{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:12.5px;font-weight:500;box-shadow:0 6px 16px rgba(0,0,0,.09);white-space:nowrap;color:#171717}
+    .hero-badge a,.hero-badge button{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:#fff;border:1px solid #e4e4e4;font-size:12.5px;font-weight:500;box-shadow:0 6px 16px rgba(0,0,0,.09);white-space:nowrap;color:#171717}
     .hero-badge-tl{top:24%;left:2%}
     .hero-badge-tr{top:32%;right:1%}
     .hero-badge-bl{top:56%;left:-1%}
@@ -156,10 +156,10 @@
       </a>
     </div>
     <div class="hero-badge hero-badge-br">
-      <a href="mailto:afera.andrej@gmail.com?subject=Radimo%20zajedno">
+      <button type="button" data-open-contact>
         <span style="font-size:14px;line-height:1">✉️</span>
-        <span>Kontakt</span>
-      </a>
+        <span>Gmail forma</span>
+      </button>
     </div>
   </div>
   <nav style="position:absolute;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:clamp(18px,2.4vw,32px) clamp(20px,4.4vw,64px)">
